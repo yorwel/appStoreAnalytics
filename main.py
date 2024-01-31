@@ -61,19 +61,36 @@ apple.to_csv(apple_csv_path, header = True)
 android.to_csv(android_csv_path, header = True)
 
 # Push data into DB
-job_config = bigquery.LoadJobConfig(
-    autodetect=True,
+apple_job_config = bigquery.LoadJobConfig(
+    skip_leading_rows=1,
+    autodetect=False,
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV,
 )
 apple_config = client.dataset(dataset).table('apple')
+
+android_job_config = bigquery.LoadJobConfig(
+    skip_leading_rows=1,
+    autodetect=False,
+    max_bad_records=5,
+    source_format=bigquery.SourceFormat.CSV,
+)
 android_config = client.dataset(dataset).table('android')
 
+with open(apple_csv_path, 'r') as f:
+    header = f.readline().strip().split(",")  # Read and split header row
+schema = [bigquery.SchemaField(name, "STRING") for name in header]  # Create schema fields
+apple_job_config.schema = schema  # Assign schema to job config
 with open(apple_csv_path, 'rb') as f:
-    load_job = client.load_table_from_file(f, apple_config, job_config=job_config)
+    load_job = client.load_table_from_file(f, apple_config, job_config=apple_job_config)
 load_job.result()
+
+with open(android_csv_path, 'r') as f:
+    header = f.readline().strip().split(",")  # Read and split header row
+schema = [bigquery.SchemaField(name, "STRING") for name in header]  # Create schema fields
+android_job_config.schema = schema  # Assign schema to job config
 with open(android_csv_path, 'rb') as f:
-    load_job = client.load_table_from_file(f, android_config, job_config=job_config)
+    load_job = client.load_table_from_file(f, android_config, job_config=android_job_config)
 load_job.result()
 
 # Remove CSV files and folder
