@@ -16,7 +16,7 @@ dataset = "practice_project"
 apple_db_path = f"{project_id}.{dataset}.apple"
 android_db_path = f"{project_id}.{dataset}.android"
 
-client = bigquery.Client.from_service_account_json(f"{folder_path}/big-data-analytics-412816-1be796546c90.json")
+client = bigquery.Client.from_service_account_json(f"{folder_path}/big-data-analytics-412816-1be796546c90_gitCopy.json")
 apple_csv_path = f"{folder_path}/apple.csv"
 android_csv_path = f"{folder_path}/android.csv"
 
