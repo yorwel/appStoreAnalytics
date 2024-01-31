@@ -45,7 +45,7 @@ with open(combined_csv, "wb") as outfile:
         with open(csvfile, "rb") as infile:
             outfile.write(infile.read())
 ## Read into DataFrame
-android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0)
+android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0) # low_memory = False
 
 ### Push datasets into Google BigQuery
 # Create 'apple' table in DB
