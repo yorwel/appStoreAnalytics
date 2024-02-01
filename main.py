@@ -47,7 +47,7 @@ with open(combined_csv, "wb") as outfile:
 ## Read into DataFrame
 android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0) # low_memory = False
 
-# Push datasets into Google BigQuery
+# Create tables into Google BigQuery
 ## Create 'apple' table in DB
 job = client.query(f"DROP TABLE {apple_db_path}").result()
 client.create_table(bigquery.Table(apple_db_path))
@@ -67,17 +67,17 @@ apple_job_config = bigquery.LoadJobConfig(
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
 )
+apple_config = client.dataset(dataset).table('apple')
+with open(apple_csv_path, 'rb') as f:
+    apple_load_job = client.load_table_from_file(f, apple_config, job_config=apple_job_config)
+apple_load_job.result()
+
 android_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
 )
-apple_config = client.dataset(dataset).table('apple')
 android_config = client.dataset(dataset).table('android')
-
-with open(apple_csv_path, 'rb') as f:
-    apple_load_job = client.load_table_from_file(f, apple_config, job_config=apple_job_config)
-apple_load_job.result()
 with open(android_csv_path, 'rb') as f:
     android_load_job = client.load_table_from_file(f, android_config, job_config=android_job_config)
 android_load_job.result()
