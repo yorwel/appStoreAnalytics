@@ -53,14 +53,24 @@ job = client.query(f"DROP TABLE {apple_db_path}").result()
 client.create_table(bigquery.Table(apple_db_path))
 
 # Create 'android' table in DB
-androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count', 'Installs', 'Minimum Installs', 'Maximum Installs', 'Free', 'Price',
- 'Currency', 'Size', 'Minimum Android', 'Developer Id', 'Developer Website', 'Developer Email', 'Released', 'Last Updated', 'Content Rating',
- 'Privacy Policy', 'Ad Supported', 'In App Purchases', 'Editors Choice', 'Scrapped Time']
+# androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count', 'Installs', 'Minimum Installs', 'Maximum Installs', 'Free', 'Price',
+#  'Currency', 'Size', 'Minimum Android', 'Developer Id', 'Developer Website', 'Developer Email', 'Released', 'Last Updated', 'Content Rating',
+#  'Privacy Policy', 'Ad Supported', 'In App Purchases', 'Editors Choice', 'Scraped Time']
 
-schema = []
-for col in androidColumns_list:
-    schema.append(bigquery.SchemaField(
-    f'{col}', android.dtype[f'{col}']))
+# schema = []
+# for col in androidColumns_list:
+#     schema.append(bigquery.SchemaField(
+#     col, str(android.dtypes[col])))
+
+# corrected_schema = []
+# for field in schema:
+#     new_field = field.replace(field_type=str(field.field_type).replace('OBJECT', 'STRING')  # Replace OBJECT with STRING
+#                                                       .replace('BOOL', 'BOOLEAN')     # Replace BOOL with BOOLEAN
+#                                                       .replace('FLOAT64', 'FLOAT'))    # Replace FLOAT64 with FLOAT
+#     corrected_schema.append(new_field)
+# schema = corrected_schema.copy()
+
+# import pdb;pdb.set_trace()
 
 # schema = [
 #     bigquery.SchemaField(
@@ -113,13 +123,15 @@ for col in androidColumns_list:
 #     'Scrapped Time')
 # ]
 
-job = client.query(f"DROP TABLE {android_db_path}").result()
-client.create_table(bigquery.Table(android_db_path, schema = schema))
 # job = client.query(f"DROP TABLE {android_db_path}").result()
-# client.create_table(bigquery.Table(android_db_path))
+# client.create_table(bigquery.Table(android_db_path, schema = schema))
+job = client.query(f"DROP TABLE {android_db_path}").result()
+client.create_table(bigquery.Table(android_db_path))
 
 # Save data as CSV files
+apple.columns = [name.replace(" ", "_") for name in apple.columns]
 apple.to_csv(apple_csv_path, header = True, index = False)
+android.columns = [name.replace(" ", "_") for name in android.columns]
 android.to_csv(android_csv_path, header = True, index = False)
 
 # Push data into DB
