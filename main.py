@@ -57,56 +57,61 @@ androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count
  'Currency', 'Size', 'Minimum Android', 'Developer Id', 'Developer Website', 'Developer Email', 'Released', 'Last Updated', 'Content Rating',
  'Privacy Policy', 'Ad Supported', 'In App Purchases', 'Editors Choice', 'Scrapped Time']
 
-schema = [
-    bigquery.SchemaField(
-    'App Name', 'STRING'),
-    bigquery.SchemaField(
-    'App Id', 'STRING'),
-    bigquery.SchemaField(
-    'Category', 'STRING'),
-    bigquery.SchemaField(
-    'Rating', 'FLOAT'),
-    bigquery.SchemaField(
-    'Rating Count', 'FLOAT'),
-    bigquery.SchemaField(
-    'Installs', 'STRING'),
-    bigquery.SchemaField(
-    'Minimum Installs', 'FLOAT'),
-    bigquery.SchemaField(
-    'Maximum Installs', 'INTEGER'),
-    bigquery.SchemaField(
-    'Free', 'BOOLEAN'),
-    bigquery.SchemaField(
-    'Price', 'FLOAT'),
-    bigquery.SchemaField(
-    'Currency', 'STRING'),
-    bigquery.SchemaField(
-    'Size', 'STRING'),
-    bigquery.SchemaField(
-    'Minimum Android', 'STRING'),
-    bigquery.SchemaField(
-    'Developer Id', 'STRING'),
-    bigquery.SchemaField(
-    'Developer Website', 'STRING'),
-    bigquery.SchemaField(
-    'Developer Email', 'STRING'),
-    bigquery.SchemaField(
-    'Released', 'STRING'),
-    bigquery.SchemaField(
-    'Last Updated', 'STRING'),
-    bigquery.SchemaField(
-    'Content Rating', 'STRING'),
-    bigquery.SchemaField(
-    'Privacy Policy', 'STRING'),
-    bigquery.SchemaField(
-    'Ad Supported', 'BOOLEAN'),
-    bigquery.SchemaField(
-    'In App Purchases', 'BOOLEAN'),
-    bigquery.SchemaField(
-    'Editors Choice', 'BOOLEAN'),
-    bigquery.SchemaField(
-    'Scrapped Time', 'TIMESTAMP')
-]
+schema = []
+for col in androidColumns_list:
+    schema.append(bigquery.SchemaField(
+    f'{col}'))
+
+# schema = [
+#     bigquery.SchemaField(
+#     'App Name'),
+#     bigquery.SchemaField(
+#     'App Id'),
+#     bigquery.SchemaField(
+#     'Category'),
+#     bigquery.SchemaField(
+#     'Rating'),
+#     bigquery.SchemaField(
+#     'Rating Count'),
+#     bigquery.SchemaField(
+#     'Installs'),
+#     bigquery.SchemaField(
+#     'Minimum Installs'),
+#     bigquery.SchemaField(
+#     'Maximum Installs'),
+#     bigquery.SchemaField(
+#     'Free'),
+#     bigquery.SchemaField(
+#     'Price'),
+#     bigquery.SchemaField(
+#     'Currency'),
+#     bigquery.SchemaField(
+#     'Size'),
+#     bigquery.SchemaField(
+#     'Minimum Android'),
+#     bigquery.SchemaField(
+#     'Developer Id'),
+#     bigquery.SchemaField(
+#     'Developer Website'),
+#     bigquery.SchemaField(
+#     'Developer Email'),
+#     bigquery.SchemaField(
+#     'Released'),
+#     bigquery.SchemaField(
+#     'Last Updated'),
+#     bigquery.SchemaField(
+#     'Content Rating'),
+#     bigquery.SchemaField(
+#     'Privacy Policy'),
+#     bigquery.SchemaField(
+#     'Ad Supported'),
+#     bigquery.SchemaField(
+#     'In App Purchases'),
+#     bigquery.SchemaField(
+#     'Editors Choice'),
+#     bigquery.SchemaField(
+#     'Scrapped Time')
+# ]
 
 job = client.query(f"DROP TABLE {android_db_path}").result()
 client.create_table(bigquery.Table(android_db_path, schema = schema))
