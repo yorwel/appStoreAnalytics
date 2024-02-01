@@ -2,15 +2,12 @@ name: Schedule Python Script
 
 on:
   schedule:
-    - cron: '* * * * * Asia/Singapore' # cron: '* * * * *' (runs every 5 mins) # cron: '0 0 * * *' (runs at 12am daily)
+    - cron: '* * * * *' # cron: '* * * * *' (runs every 5 mins) # cron: '0 16 * * *' (runs at midnight daily at UTC+08, Singapore time)
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
-      - name: set time zone to Singapore
-        run: export TZ=Asia/Singapore
 
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner

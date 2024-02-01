@@ -53,12 +53,69 @@ job = client.query(f"DROP TABLE {apple_db_path}").result()
 client.create_table(bigquery.Table(apple_db_path))
 
 # Create 'android' table in DB
+androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count', 'Installs', 'Minimum Installs', 'Maximum Installs', 'Free', 'Price',
+ 'Currency', 'Size', 'Minimum Android', 'Developer Id', 'Developer Website', 'Developer Email', 'Released', 'Last Updated', 'Content Rating',
+ 'Privacy Policy', 'Ad Supported', 'In App Purchases', 'Editors Choice', 'Scrapped Time']
+
+schema = [
+    bigquery.SchemaField(
+    'App Name', 'STRING'),
+    bigquery.SchemaField(
+    'App Id', 'STRING'),
+    bigquery.SchemaField(
+    'Category', 'STRING'),
+    bigquery.SchemaField(
+    'Rating', 'FLOAT'),
+    bigquery.SchemaField(
+    'Rating Count', 'FLOAT'),
+    bigquery.SchemaField(
+    'Installs', 'STRING'),
+    bigquery.SchemaField(
+    'Minimum Installs', 'FLOAT'),
+    bigquery.SchemaField(
+    'Maximum Installs', 'INTEGER'),
+    bigquery.SchemaField(
+    'Free', 'BOOLEAN'),
+    bigquery.SchemaField(
+    'Price', 'FLOAT'),
+    bigquery.SchemaField(
+    'Currency', 'STRING'),
+    bigquery.SchemaField(
+    'Size', 'STRING'),
+    bigquery.SchemaField(
+    'Minimum Android', 'STRING'),
+    bigquery.SchemaField(
+    'Developer Id', 'STRING'),
+    bigquery.SchemaField(
+    'Developer Website', 'STRING'),
+    bigquery.SchemaField(
+    'Developer Email', 'STRING'),
+    bigquery.SchemaField(
+    'Released', 'STRING'),
+    bigquery.SchemaField(
+    'Last Updated', 'STRING'),
+    bigquery.SchemaField(
+    'Content Rating', 'STRING'),
+    bigquery.SchemaField(
+    'Privacy Policy', 'STRING'),
+    bigquery.SchemaField(
+    'Ad Supported', 'BOOLEAN'),
+    bigquery.SchemaField(
+    'In App Purchases', 'BOOLEAN'),
+    bigquery.SchemaField(
+    'Editors Choice', 'BOOLEAN'),
+    bigquery.SchemaField(
+    'Scrapped Time', 'TIMESTAMP')
+]
+
 job = client.query(f"DROP TABLE {android_db_path}").result()
-client.create_table(bigquery.Table(android_db_path))
+client.create_table(bigquery.Table(android_db_path, schema = schema))
+# job = client.query(f"DROP TABLE {android_db_path}").result()
+# client.create_table(bigquery.Table(android_db_path))
 
 # Save data as CSV files
-apple.to_csv(apple_csv_path, header = True)
-android.to_csv(android_csv_path, header = True)
+apple.to_csv(apple_csv_path, header = True, index = False)
+android.to_csv(android_csv_path, header = True, index = False)
 
 # Push data into DB
 job_config = bigquery.LoadJobConfig(
