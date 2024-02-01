@@ -47,84 +47,11 @@ with open(combined_csv, "wb") as outfile:
 ## Read into DataFrame
 android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0) # low_memory = False
 
-### Push datasets into Google BigQuery
-# Create 'apple' table in DB
+# Push datasets into Google BigQuery
+## Create 'apple' table in DB
 job = client.query(f"DROP TABLE {apple_db_path}").result()
 client.create_table(bigquery.Table(apple_db_path))
-
-# Create 'android' table in DB
-# androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count', 'Installs', 'Minimum Installs', 'Maximum Installs', 'Free', 'Price',
-#  'Currency', 'Size', 'Minimum Android', 'Developer Id', 'Developer Website', 'Developer Email', 'Released', 'Last Updated', 'Content Rating',
-#  'Privacy Policy', 'Ad Supported', 'In App Purchases', 'Editors Choice', 'Scraped Time']
-
-# schema = []
-# for col in androidColumns_list:
-#     schema.append(bigquery.SchemaField(
-#     col, str(android.dtypes[col])))
-
-# corrected_schema = []
-# for field in schema:
-#     new_field = field.replace(field_type=str(field.field_type).replace('OBJECT', 'STRING')  # Replace OBJECT with STRING
-#                                                       .replace('BOOL', 'BOOLEAN')     # Replace BOOL with BOOLEAN
-#                                                       .replace('FLOAT64', 'FLOAT'))    # Replace FLOAT64 with FLOAT
-#     corrected_schema.append(new_field)
-# schema = corrected_schema.copy()
-
-# import pdb;pdb.set_trace()
-
-# schema = [
-#     bigquery.SchemaField(
-#     'App Name'),
-#     bigquery.SchemaField(
-#     'App Id'),
-#     bigquery.SchemaField(
-#     'Category'),
-#     bigquery.SchemaField(
-#     'Rating'),
-#     bigquery.SchemaField(
-#     'Rating Count'),
-#     bigquery.SchemaField(
-#     'Installs'),
-#     bigquery.SchemaField(
-#     'Minimum Installs'),
-#     bigquery.SchemaField(
-#     'Maximum Installs'),
-#     bigquery.SchemaField(
-#     'Free'),
-#     bigquery.SchemaField(
-#     'Price'),
-#     bigquery.SchemaField(
-#     'Currency'),
-#     bigquery.SchemaField(
-#     'Size'),
-#     bigquery.SchemaField(
-#     'Minimum Android'),
-#     bigquery.SchemaField(
-#     'Developer Id'),
-#     bigquery.SchemaField(
-#     'Developer Website'),
-#     bigquery.SchemaField(
-#     'Developer Email'),
-#     bigquery.SchemaField(
-#     'Released'),
-#     bigquery.SchemaField(
-#     'Last Updated'),
-#     bigquery.SchemaField(
-#     'Content Rating'),
-#     bigquery.SchemaField(
-#     'Privacy Policy'),
-#     bigquery.SchemaField(
-#     'Ad Supported'),
-#     bigquery.SchemaField(
-#     'In App Purchases'),
-#     bigquery.SchemaField(
-#     'Editors Choice'),
-#     bigquery.SchemaField(
-#     'Scrapped Time')
-# ]
-
-# job = client.query(f"DROP TABLE {android_db_path}").result()
-# client.create_table(bigquery.Table(android_db_path, schema = schema))
+## Create 'android' table in DB
 job = client.query(f"DROP TABLE {android_db_path}").result()
 client.create_table(bigquery.Table(android_db_path))
 
@@ -183,7 +110,7 @@ dateTime_config = client.dataset(dataset).table('dateTime')
 with open(dateTime_csv_path, 'rb') as f:
     dateTime_load_job = client.load_table_from_file(f, dateTime_config, job_config=dateTime_job_config)
 dateTime_load_job.result()
-# Remove CSV file
+## Remove CSV file
 try:
     os.remove(dateTime_csv_path)
 except:
