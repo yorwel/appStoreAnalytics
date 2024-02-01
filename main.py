@@ -59,7 +59,7 @@ client.create_table(bigquery.Table(android_db_path))
 apple.columns = [name.replace(" ", "_") for name in apple.columns]
 apple.to_csv(apple_csv_path, header = True, index = False)
 android.columns = [name.replace(" ", "_") for name in android.columns]
-android.to_csv(android_csv_path, header = True, index = False)
+android.head().to_csv(android_csv_path, header = True, index = False)
 
 # Push data into DB
 apple_job_config = bigquery.LoadJobConfig(
