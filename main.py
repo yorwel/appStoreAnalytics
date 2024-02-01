@@ -74,7 +74,7 @@ with open(apple_csv_path, 'rb') as f:
 apple_load_job.result()
 
 android_job_config = bigquery.LoadJobConfig(
-    autodetect=True,
+    autodetect=False,
     skip_leading_rows=1,
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
