@@ -49,17 +49,17 @@ android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0) # low_memory =
 
 # Create tables into Google BigQuery
 ## Create 'apple' table in DB
-job = client.query(f"DROP TABLE {apple_db_path}").result()
-client.create_table(bigquery.Table(apple_db_path))
+job = client.query(f"DELETE FROM {apple_db_path}").result()
+client.create_table(bigquery.Table(apple_db_path), exists_ok = True)
 ## Create 'android' table in DB
-job = client.query(f"DROP TABLE {android_db_path}").result()
-client.create_table(bigquery.Table(android_db_path))
+job = client.query(f"DELETE FROM {android_db_path}").result()
+client.create_table(bigquery.Table(android_db_path), exists_ok = True)
 
 # Save data as CSV files
 apple.columns = [name.replace(" ", "_") for name in apple.columns]
 apple.to_csv(apple_csv_path, header = True, index = False)
 android.columns = [name.replace(" ", "_") for name in android.columns]
-android.head().to_csv(android_csv_path, header = True, index = False)
+android.head().to_csv(android_csv_path, header = True, index = False) # TODO
 
 # Push data into DB
 apple_job_config = bigquery.LoadJobConfig(
