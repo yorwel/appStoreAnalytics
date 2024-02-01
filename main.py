@@ -135,7 +135,12 @@ android.columns = [name.replace(" ", "_") for name in android.columns]
 android.to_csv(android_csv_path, header = True, index = False)
 
 # Push data into DB
-job_config = bigquery.LoadJobConfig(
+apple_job_config = bigquery.LoadJobConfig(
+    autodetect=True,
+    max_bad_records=5,
+    source_format=bigquery.SourceFormat.CSV
+)
+android_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
@@ -144,11 +149,11 @@ apple_config = client.dataset(dataset).table('apple')
 android_config = client.dataset(dataset).table('android')
 
 with open(apple_csv_path, 'rb') as f:
-    load_job = client.load_table_from_file(f, apple_config, job_config=job_config)
-load_job.result()
+    apple_load_job = client.load_table_from_file(f, apple_config, job_config=apple_job_config)
+apple_load_job.result()
 with open(android_csv_path, 'rb') as f:
-    load_job = client.load_table_from_file(f, android_config, job_config=job_config)
-load_job.result()
+    android_load_job = client.load_table_from_file(f, android_config, job_config=android_job_config)
+android_load_job.result()
 
 # Remove CSV files and folder
 try:
@@ -170,14 +175,14 @@ time_zone = dt.strftime('%z')  # Time zone
 output = f"Date and Time: {date_time_str}; Time zone: {time_zone}"
 dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
 dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True)
-job_config = bigquery.LoadJobConfig(
+dateTime_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     source_format=bigquery.SourceFormat.CSV,
 )
 dateTime_config = client.dataset(dataset).table('dateTime')
 with open(dateTime_csv_path, 'rb') as f:
-    load_job = client.load_table_from_file(f, dateTime_config, job_config=job_config)
-load_job.result()
+    dateTime_load_job = client.load_table_from_file(f, dateTime_config, job_config=dateTime_job_config)
+dateTime_load_job.result()
 # Remove CSV file
 try:
     os.remove(dateTime_csv_path)
