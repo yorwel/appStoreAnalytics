@@ -60,7 +60,7 @@ androidColumns_list = ['App Name', 'App Id', 'Category', 'Rating', 'Rating Count
 schema = []
 for col in androidColumns_list:
     schema.append(bigquery.SchemaField(
-    f'{col}'))
+    f'{col}', android.dtype[f'{col}']))
 
 # schema = [
 #     bigquery.SchemaField(
