@@ -49,10 +49,10 @@ android = pd.read_csv("Google-Playstore-Dataset.csv", header = 0) # low_memory =
 
 # Create tables into Google BigQuery
 ## Create 'apple' table in DB
-job = client.query(f"DELETE FROM {apple_db_path}").result()
+job = client.query(f"DELETE FROM {apple_db_path} WHERE TRUE").result()
 client.create_table(bigquery.Table(apple_db_path), exists_ok = True)
 ## Create 'android' table in DB
-job = client.query(f"DELETE FROM {android_db_path}").result()
+job = client.query(f"DELETE FROM {android_db_path} WHERE TRUE").result()
 client.create_table(bigquery.Table(android_db_path), exists_ok = True)
 
 # Save data as CSV files
