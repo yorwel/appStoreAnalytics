@@ -97,7 +97,7 @@ output = f"Date and Time: {date_time_str}; Time zone: {time_zone}"
 dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
 dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True, index = False)
 dateTime_job_config = bigquery.LoadJobConfig(
-    autodetect=True,
+    autodetect=False,
     source_format=bigquery.SourceFormat.CSV,
 )
 dateTime_config = client.dataset(dataset).table('dateTime')
