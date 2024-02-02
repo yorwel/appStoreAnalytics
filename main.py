@@ -95,7 +95,7 @@ date_time_str = dt.strftime('%d-%m-%Y %H:%M:%S')  # Date and time
 time_zone = dt.strftime('%z')  # Time zone
 output = f"{date_time_str}; GMT+{time_zone[2]} (SGT)"
 dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
-dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True)
+dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True, index = False)
 dateTime_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     source_format=bigquery.SourceFormat.CSV,
