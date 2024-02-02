@@ -16,7 +16,7 @@ dataset = "practice_project"
 apple_db_path = f"{project_id}.{dataset}.apple"
 android_db_path = f"{project_id}.{dataset}.android"
 
-client = bigquery.Client.from_service_account_json(f"{folder_path}/big-data-analytics-412816-1be796546c90_gitCopy.json")
+client = bigquery.Client.from_service_account_json(f"{folder_path}/dataSources/big-data-analytics-412816-1be796546c90.json")
 apple_csv_path = f"{folder_path}/apple.csv"
 android_csv_path = f"{folder_path}/android.csv"
 
@@ -84,14 +84,6 @@ with open(android_csv_path, 'rb') as f:
     android_load_job = client.load_table_from_file(f, android_config, job_config=android_job_config)
 android_load_job.result()
 
-# Remove CSV files and folder
-try:
-    os.remove(apple_csv_path)
-    os.remove(android_csv_path)
-    shutil.rmtree(f"{folder_path}apple-appstore-apps")
-except:
-    pass
-
 # Create 'dateTime' table in DB
 dateTime_csv_path = f"{folder_path}/dateTime.csv"
 dateTime_db_path = f"{project_id}.{dataset}.dateTime"
@@ -103,18 +95,23 @@ date_time_str = dt.strftime('%d-%m-%Y %H:%M:%S')  # Date and time
 time_zone = dt.strftime('%z')  # Time zone
 output = f"Date and Time: {date_time_str}; Time zone: {time_zone}"
 dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
-dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True)
+dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True, index = False)
 dateTime_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     source_format=bigquery.SourceFormat.CSV,
 )
 dateTime_config = client.dataset(dataset).table('dateTime')
+# job = client.query(f"DELETE FROM {project_id}.{dataset}.dateTime WHERE TRUE").result()
 with open(dateTime_csv_path, 'rb') as f:
     dateTime_load_job = client.load_table_from_file(f, dateTime_config, job_config=dateTime_job_config)
 dateTime_load_job.result()
-## Remove CSV file
+
+## Remove CSV files and folder
 try:
+    os.remove(apple_csv_path)
+    os.remove(android_csv_path)
     os.remove(dateTime_csv_path)
+    shutil.rmtree(f"{folder_path}apple-appstore-apps")
 except:
     pass
 
