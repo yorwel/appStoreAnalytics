@@ -98,6 +98,7 @@ dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
 dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True, index = False)
 dateTime_job_config = bigquery.LoadJobConfig(
     autodetect=True,
+    skip_leading_rows=1,
     source_format=bigquery.SourceFormat.CSV,
 )
 dateTime_config = client.dataset(dataset).table('dateTime')
