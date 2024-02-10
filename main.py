@@ -13,17 +13,18 @@ folder_path = os.getcwd().replace("\\", "/")
 
 # Extract Google API from GitHub Secret Variable
 googleAPI_dict = json.loads(os.environ["GOOGLEAPI"])
-dictForJson = {key: value for key, value in googleAPI_dict.items()}
 with open("googleAPI.json", "w") as f:
-    json.dump(dictForJson, f)
+    json.dump(googleAPI_dict, f)
 
 # Hard-coded variables
-project_id = "big-data-analytics-412816"
-dataset = "practice_project"
-apple_db_path = f"{project_id}.{dataset}.apple"
-google_db_path = f"{project_id}.{dataset}.google"
+project_id = googleAPI_dict["project_id"]
+rawDataset = "practice_project"
+apple_db_path = f"{project_id}.{rawDataset}.apple"
+google_db_path = f"{project_id}.{rawDataset}.google"
+dateTime_db_path = f"{project_id}.{rawDataset}.dateTime"
 apple_csv_path = f"{folder_path}/apple.csv"
 google_csv_path = f"{folder_path}/google.csv"
+dateTime_csv_path = f"{folder_path}/dateTime.csv"
 googleAPI_json_path = f"{folder_path}/googleAPI.json"
 
 client = bigquery.Client.from_service_account_json(googleAPI_json_path)
@@ -75,7 +76,7 @@ apple_job_config = bigquery.LoadJobConfig(
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
 )
-apple_config = client.dataset(dataset).table('apple')
+apple_config = client.dataset(rawDataset).table('apple')
 with open(apple_csv_path, 'rb') as f:
     apple_load_job = client.load_table_from_file(f, apple_config, job_config=apple_job_config)
 apple_load_job.result()
@@ -86,30 +87,28 @@ google_job_config = bigquery.LoadJobConfig(
     max_bad_records=5,
     source_format=bigquery.SourceFormat.CSV
 )
-google_config = client.dataset(dataset).table('google')
+google_config = client.dataset(rawDataset).table('google')
 with open(google_csv_path, 'rb') as f:
     google_load_job = client.load_table_from_file(f, google_config, job_config=google_job_config)
 google_load_job.result()
 
 # Create 'dateTime' table in DB
-dateTime_csv_path = f"{folder_path}/dateTime.csv"
-dateTime_db_path = f"{project_id}.{dataset}.dateTime"
 job = client.query(f"DELETE FROM {dateTime_db_path} WHERE TRUE").result()
 client.create_table(bigquery.Table(dateTime_db_path), exists_ok = True)
 current_time = datetime.now(timezone('Asia/Shanghai'))
 timestamp_string = current_time.isoformat()
 dt = datetime.strptime(timestamp_string, '%Y-%m-%dT%H:%M:%S.%f%z')
-date_time_str = dt.strftime('%d-%m-%Y %H:%M:%S')  # Date and time
-time_zone = dt.strftime('%z')  # Time zone
+date_time_str = dt.strftime('%d-%m-%Y %H:%M:%S')
+time_zone = dt.strftime('%z')
 output = f"{date_time_str}; GMT+{time_zone[2]} (SGT)"
 dateTime_df = pd.DataFrame(data = [output], columns = ['dateTime'])
-dateTime_df.to_csv(f"{folder_path}/dateTime.csv", header = True, index = False)
+dateTime_df.to_csv(dateTime_csv_path, header = True, index = False)
 dateTime_job_config = bigquery.LoadJobConfig(
     autodetect=True,
     skip_leading_rows=1,
     source_format=bigquery.SourceFormat.CSV,
 )
-dateTime_config = client.dataset(dataset).table('dateTime')
+dateTime_config = client.dataset(rawDataset).table('dateTime')
 with open(dateTime_csv_path, 'rb') as f:
     dateTime_load_job = client.load_table_from_file(f, dateTime_config, job_config=dateTime_job_config)
 dateTime_load_job.result()
