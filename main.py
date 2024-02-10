@@ -4,22 +4,26 @@ import subprocess
 import glob
 import shutil
 import pandas as pd
+import json
 from google.cloud import bigquery
 from pandas_gbq import read_gbq
 from datetime import datetime
 from pytz import timezone
 folder_path = os.getcwd().replace("\\", "/")
 
+with open("googleAPI.json", "w") as f:
+    json.dump(os.environ["GOOGLEAPI"], f)
+
 # Hard-coded variables
 project_id = "big-data-analytics-412816"
 dataset = "practice_project"
 apple_db_path = f"{project_id}.{dataset}.apple"
 google_db_path = f"{project_id}.{dataset}.google"
-
-# client = bigquery.Client.from_service_account_json(f"{folder_path}/dataSources/big-data-analytics-412816-1be796546c90.json")
-client = bigquery.Client.from_service_account_json(os.environ["GOOGLEAPI"])
 apple_csv_path = f"{folder_path}/apple.csv"
 google_csv_path = f"{folder_path}/google.csv"
+googleAPI_json_path = f"{folder_path}/googleAPI.json"
+
+client = bigquery.Client.from_service_account_json(googleAPI_json_path)
 
 # Apple
 ## Clone the repository
@@ -112,6 +116,7 @@ try:
     os.remove(apple_csv_path)
     os.remove(google_csv_path)
     os.remove(dateTime_csv_path)
+    os.remove(googleAPI_json_path)
     shutil.rmtree(f"{folder_path}apple-appstore-apps")
 except:
     pass
